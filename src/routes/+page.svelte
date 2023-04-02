@@ -2,6 +2,8 @@
   import type { NodeType } from 'svelvet'
   import Svelvet from 'svelvet'
 
+  import Header from '$components/Header.svelte'
+
   const imageUrls = ['synthcat.jpg']
 
   function handleNodeClick(node: NodeType) {
@@ -57,6 +59,7 @@
   ]
 </script>
 
+<Header />
 <Svelvet
   nodes={initialNodes}
   edges={initialEdges}
