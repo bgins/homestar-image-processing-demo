@@ -2,6 +2,7 @@
   import type { NodeType } from 'svelvet'
   import Svelvet from 'svelvet'
 
+  import Controls from '$components/Controls.svelte'
   import Header from '$components/Header.svelte'
 
   const imageUrls = ['synthcat.jpg']
@@ -60,6 +61,7 @@
 </script>
 
 <Header />
+<Controls />
 <Svelvet
   nodes={initialNodes}
   edges={initialEdges}
