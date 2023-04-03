@@ -37,6 +37,6 @@
   },
   "type": "module",
   "dependencies": {
-    "svelvet": "file:../../svelte/Svelvet"
+    "svelvet": "github:bgins/Svelvet#custom-for-homestar"
   }
 }
