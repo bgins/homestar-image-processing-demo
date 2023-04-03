@@ -69,7 +69,7 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
         id: String(index + idOffset),
         position: { x: 500 + ((index + 1) * 250), y: 150 },
         data: {
-          html: `<img src="synthcat.jpg" />`
+          html: `<img src="synthcat.jpg" draggable="false" />`
         },
         width: 150,
         height: 150,
@@ -87,9 +87,9 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
       // @ts-ignore
       nodes = [ ...nodes, {
         id: String(index + idOffset),
-        position: { x: 500 + (index  * 250), y: 550 },
+        position: { x: 500 + (index  * 250), y: 450 },
         data: {
-          html: `<img src="synthcat.jpg" />`
+          html: `<img src="synthcat.jpg" draggable="false" />`
         },
         width: 150,
         height: 150,
@@ -105,7 +105,7 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
       id: '1',
       position: { x: 500, y: 300 },
       data: {
-        html: `<img src="synthcat.jpg" />`
+        html: `<img src="synthcat.jpg" draggable="false" />`
       },
       width: 150,
       height: 150,
