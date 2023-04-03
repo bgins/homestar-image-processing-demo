@@ -4,5 +4,7 @@ export type Task = {
   label: string
   content: string
   active: boolean
-  status: 'waiting' | 'skipped' | 'success' | 'failure'
+  status: TaskStatus
 }
+
+export type TaskStatus = 'waiting' | 'skipped' | 'success' | 'failure'

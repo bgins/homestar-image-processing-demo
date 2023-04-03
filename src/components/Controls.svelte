@@ -1,9 +1,18 @@
 <script lang="ts">
-  import type { Task } from '$lib/task'
+  import { onDestroy } from 'svelte'
+
+  import type { Task, TaskStatus } from '$lib/task'
   import type { Workflow } from '$lib/workflow'
 
+  import { taskStore } from '../stores'
   import TaskEntry from '$components/controls/Task.svelte'
   import WorkflowEntry from '$components/controls/Workflow.svelte'
+
+  let tasks: Record<string, Task[]> = {}
+
+  const unsubscribeTaskStore = taskStore.subscribe(store => {
+    tasks = store
+  })
 
   let workflows: Record<string, Workflow> = {
     one: {
@@ -14,61 +23,6 @@
       id: 'two',
       status: 'waiting'
     }
-  }
-
-  let tasks: Record<string, Task[]> = {
-    one: [
-      {
-        id: 1,
-        workflowId: 'one',
-        label: 'Crop',
-        content: 'Waiting for task to complete',
-        active: false,
-        status: 'waiting'
-      },
-      {
-        id: 2,
-        workflowId: 'one',
-        label: 'Rotate',
-        content: 'Task completed with receipt...',
-        active: false,
-        status: 'success'
-      },
-      {
-        id: 3,
-        workflowId: 'one',
-        label: 'Saturate',
-        content: 'Task failed to complete.',
-        active: false,
-        status: 'failure'
-      }
-    ],
-    two: [
-      {
-        id: 1,
-        workflowId: 'two',
-        label: 'Crop',
-        content: 'Task completed in Workflow 1',
-        active: false,
-        status: 'skipped'
-      },
-      {
-        id: 2,
-        workflowId: 'two',
-        label: 'Rotate',
-        content: 'Task completed in Workflow 1',
-        active: false,
-        status: 'skipped'
-      },
-      {
-        id: 3,
-        workflowId: 'two',
-        label: 'Grayscale',
-        content: 'Task completed with receipt...',
-        active: false,
-        status: 'success'
-      }
-    ]
   }
 
   function expand(event: CustomEvent<{ task: Task }>) {
@@ -97,14 +51,65 @@
   function run(event: CustomEvent<{ workflowId: string }>) {
     const { workflowId } = event.detail
 
-    console.log('Running workflow', workflowId)
-
     workflows[workflowId].status = 'working'
+    reset(workflowId)
 
-    setTimeout(() => {
-      workflows[workflowId].status = 'waiting'
-    }, 3000)
+    if (workflowId === 'one') {
+      Promise.resolve()
+        .then(() => execute(tasks['one'][0], 'success', 500))
+        .then(() => execute(tasks['one'][1], 'success', 1500))
+        .then(() => execute(tasks['one'][2], 'failure', 3000))
+        .then(() => (workflows[workflowId].status = 'waiting'))
+    } else if (workflowId === 'two') {
+      Promise.resolve()
+        .then(() => execute(tasks['two'][0], 'skipped', 200))
+        .then(() => execute(tasks['two'][1], 'skipped', 200))
+        .then(() => execute(tasks['two'][2], 'success', 1500))
+        .then(() => (workflows[workflowId].status = 'waiting'))
+    }
   }
+
+  function reset(workflowId: string) {
+    taskStore.update(store => {
+      const status: TaskStatus = 'waiting'
+      const updatedTasks = store[workflowId].map(t => ({ ...t, status }))
+      return { ...store, [workflowId]: updatedTasks }
+    })
+  }
+
+  function execute(task: Task, status: TaskStatus, delay: number) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        taskStore.update(store => {
+          const updatedTasks = store[task.workflowId].map(t =>
+            t.id === task.id ? { ...t, status, content: getTaskContent(status) } : t
+          )
+          return { ...store, [task.workflowId]: updatedTasks }
+        })
+        resolve(null)
+      }, delay)
+    })
+  }
+
+  function getTaskContent(status: TaskStatus) {
+    switch (status) {
+      case 'waiting':
+        return 'Waiting for task to complete.'
+
+      case 'success':
+        return 'Task completed successfully.'
+
+      case 'failure':
+        return 'Task failed to complete.'
+
+      case 'skipped':
+        return 'Task completed in another workflow.'
+    }
+  }
+
+  onDestroy(() => {
+    unsubscribeTaskStore()
+  })
 </script>
 
 <div class="absolute z-10 left-3 top-16 w-60 bg-white border border-black shadow-md">
