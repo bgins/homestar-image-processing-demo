@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
 
-  import type { Task, TaskStatus } from '$lib/task'
+  import type { Receipt, Task, TaskStatus } from '$lib/task'
   import type { Workflow } from '$lib/workflow'
 
   import { taskStore } from '../stores'
@@ -82,8 +82,18 @@
       setTimeout(() => {
         taskStore.update(store => {
           const updatedTasks = store[task.workflowId].map(t =>
-            t.id === task.id ? { ...t, status, content: getTaskContent(status) } : t
+            t.id === task.id
+              ? {
+                  ...t,
+                  status,
+                  message: getTaskContent(status),
+                  receipt: status === 'success' ? sampleReceipt : undefined
+                }
+              : t
           )
+
+          console.table(sampleReceipt)
+
           return { ...store, [task.workflowId]: updatedTasks }
         })
         resolve(null)
@@ -105,6 +115,16 @@
       case 'skipped':
         return 'Task completed in another workflow.'
     }
+  }
+
+  const sampleReceipt: Receipt = {
+    cid: 'bafyrmiczrugtx6jj42qbwd2ctlmj766th2nwzfsqmvathjdxk63rwkkvpi',
+    instruction: 'bafyrmiekhdmnekp6kx6fl22btn6skx7mksl2p64rat6etwcykzpfqow67a',
+    iss: null,
+    meta: null,
+    out: ['ok', 'base64image'],
+    prf: [],
+    ran: 'bafkr4ickinozehpaz72vtgpbhhqpf6v2fi67rvr6uis52bwsesoss6vinq'
   }
 
   onDestroy(() => {

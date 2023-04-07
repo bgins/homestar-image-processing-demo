@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { slide } from 'svelte/transition'
+  import { quartOut } from 'svelte/easing'
 
   import type { Task } from '$lib/task'
   import CircleIcon from '$components/icons/Circle.svelte'
@@ -9,6 +10,7 @@
   import ChevronUpIcon from '$components/icons/ChevronUp.svelte'
   import MinusCircleIcon from '$components/icons/MinusCircle.svelte'
   import XCircleIcon from '$components/icons/XCircle.svelte'
+  import TaskValue from '$components/controls/TaskValue.svelte'
 
   export let task: Task
 
@@ -54,8 +56,14 @@
     {/if}
   </div>
   {#if task.active}
-    <div class="slider" transition:slide>
-      <p class="text-sm text-slate-700">{task.content}</p>
+    <div transition:slide={{ easing: quartOut }}>
+      {#if task.receipt}
+        <TaskValue label="CID" val={task.receipt.cid} />
+        <TaskValue label="Instruction" val={task.receipt.instruction} />
+        <TaskValue label="Ran" val={task.receipt.ran} />
+      {:else}
+        <p class="text-sm font-light text-slate-700">{task.message}</p>
+      {/if}
     </div>
   {/if}
 </div>

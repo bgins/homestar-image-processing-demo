@@ -10,7 +10,7 @@ export const taskStore: Writable<Record<string, Task[]>> = writable({
       id: 1,
       workflowId: 'one',
       label: 'Crop',
-      content: 'Waiting for task to complete',
+      message: 'Waiting for task to complete',
       active: false,
       status: 'waiting'
     },
@@ -18,7 +18,7 @@ export const taskStore: Writable<Record<string, Task[]>> = writable({
       id: 2,
       workflowId: 'one',
       label: 'Rotate',
-      content: 'Waiting for task to complete.',
+      message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
     },
@@ -26,7 +26,7 @@ export const taskStore: Writable<Record<string, Task[]>> = writable({
       id: 3,
       workflowId: 'one',
       label: 'Saturate',
-      content: 'Waiting for task to complete.',
+      message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
     }
@@ -36,7 +36,7 @@ export const taskStore: Writable<Record<string, Task[]>> = writable({
       id: 1,
       workflowId: 'two',
       label: 'Crop',
-      content: 'Waiting for task to complete.',
+      message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
     },
@@ -44,7 +44,7 @@ export const taskStore: Writable<Record<string, Task[]>> = writable({
       id: 2,
       workflowId: 'two',
       label: 'Rotate',
-      content: 'Waiting for task to complete.',
+      message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
     },
@@ -52,7 +52,7 @@ export const taskStore: Writable<Record<string, Task[]>> = writable({
       id: 3,
       workflowId: 'two',
       label: 'Grayscale',
-      content: 'Waiting for task to complete.',
+      message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
     }
