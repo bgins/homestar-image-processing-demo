@@ -1,7 +1,7 @@
 export type Task = {
   id: number
   workflowId: 'one' | 'two'
-  label: string
+  operation: TaskOperation
   active: boolean
   status: TaskStatus
   message: string

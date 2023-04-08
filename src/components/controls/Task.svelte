@@ -36,7 +36,9 @@
     {:else if task.status === 'failure'}
       <XCircleIcon />
     {/if}
-    {task.label}
+    <span class="capitalize">
+      {task.operation}
+    </span>
     {#if task.active}
       <span
         class="ml-auto cursor-pointer"
