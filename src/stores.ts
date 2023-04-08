@@ -1,5 +1,5 @@
-import { derived, writable } from "svelte/store"
-import type { Readable, Writable } from "svelte/store"
+import { derived, writable } from 'svelte/store'
+import type { Readable, Writable } from 'svelte/store'
 import type { NodeType } from 'svelvet'
 
 import type { Task } from "$lib/task"
@@ -122,15 +122,15 @@ export const edgeStore = derived(nodeStore, $nodeStore => {
   let edges: any[] = []
   const nodeIds = $nodeStore.map(node => node.id)
 
-  if (nodeIds.includes("1") && nodeIds.includes("2")) {
+  if (nodeIds.includes('1') && nodeIds.includes('2')) {
     edges = [ ...edges, { id: 'e1-2', source: '1', target: '2', label: 'Crop', arrow: true } ]
   }
 
-  if (nodeIds.includes("2") && nodeIds.includes("3")) {
+  if (nodeIds.includes('2') && nodeIds.includes('3')) {
     edges = [ ...edges, { id: 'e2-3', source: '2', target: '3', label: 'Rotate', arrow: true } ]
   }
 
-  if (nodeIds.includes("1") && nodeIds.includes("7")) {
+  if (nodeIds.includes('1') && nodeIds.includes('7')) {
     edges = [ ...edges, { id: 'e1-7', source: '1', target: '7', label: 'Crop-Rotate-Grayscale', arrow: true, type: 'bezier' } ]
   }
 
