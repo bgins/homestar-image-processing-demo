@@ -19,3 +19,5 @@ export type Receipt = {
 }
 
 export type TaskStatus = 'waiting' | 'skipped' | 'success' | 'failure'
+
+export type TaskOperation = 'crop' | 'rotate' | 'blur' | 'grayscale'

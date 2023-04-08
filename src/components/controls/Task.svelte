@@ -60,7 +60,7 @@
   {#if task.active}
     <div transition:slide={{ easing: quartOut }}>
       {#if task.receipt}
-        <TaskValue label="CID" val={task.receipt.cid} />
+        <TaskValue label="Receipt CID" val={task.receipt.cid} />
         <TaskValue label="Instruction" val={task.receipt.instruction} />
         <TaskValue label="Ran" val={task.receipt.ran} />
       {:else}

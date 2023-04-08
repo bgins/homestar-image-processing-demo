@@ -1,15 +1,12 @@
 <script lang="ts">
   import type { NodeType } from 'svelvet'
+  import { onDestroy } from 'svelte'
   import Svelvet from 'svelvet'
 
+  import { connect } from '$lib/channel'
   import { edgeStore, nodeStore } from '../stores'
   import Controls from '$components/Controls.svelte'
   import Header from '$components/Header.svelte'
-  import { onDestroy } from 'svelte'
-
-  function handleNodeClick(node: NodeType) {
-    console.log(node)
-  }
 
   let nodes: any[] = []
   let edges: any[] = []
@@ -21,6 +18,9 @@
   const unsubscribeEdgeStore = edgeStore.subscribe(store => {
     edges = store
   })
+
+  // Connect to websocket server
+  connect()
 
   onDestroy(() => {
     unsubscribeNodeStore()

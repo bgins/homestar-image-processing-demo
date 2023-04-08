@@ -2,9 +2,28 @@ import { derived, writable } from 'svelte/store'
 import type { Readable, Writable } from 'svelte/store'
 import type { NodeType } from 'svelvet'
 
-import type { Task } from "$lib/task"
+import type { Channel } from '$lib/channel'
+import type { Workflow, WorkflowId, WorkflowState } from '$lib/workflow'
+import type { Maybe } from '$lib'
+import type { Task } from '$lib/task'
 
-export const taskStore: Writable<Record<string, Task[]>> = writable({
+
+export const channelStore: Writable<Maybe<Channel>> = writable(null)
+
+export const workflowStore: Writable<Record<string, Workflow>> = writable({
+  one: {
+    id: 'one',
+    status: 'waiting'
+  },
+  two: {
+    id: 'two',
+    status: 'waiting'
+  }
+})
+
+export const activeWorkflowStore: Writable<Maybe<WorkflowState>> = writable(null)
+
+export const taskStore: Writable<Record<WorkflowId, Task[]>> = writable({
   one: [
     {
       id: 1,
