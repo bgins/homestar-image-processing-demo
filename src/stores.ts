@@ -130,6 +130,10 @@ export const edgeStore = derived(nodeStore, $nodeStore => {
     edges = [ ...edges, { id: 'e2-3', source: '2', target: '3', label: 'Rotate', arrow: true } ]
   }
 
+  if (nodeIds.includes('3') && nodeIds.includes('4')) {
+    edges = [ ...edges, { id: 'e3-4', source: '3', target: '4', label: 'Blur', arrow: true } ]
+  }
+
   if (nodeIds.includes('1') && nodeIds.includes('7')) {
     edges = [ ...edges, { id: 'e1-7', source: '1', target: '7', label: 'Crop-Rotate-Grayscale', arrow: true, type: 'bezier' } ]
   }
