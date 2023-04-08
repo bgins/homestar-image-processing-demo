@@ -2,7 +2,7 @@ import { get as getStore } from 'svelte/store'
 
 import type { Receipt, TaskOperation, TaskStatus } from '$lib/task'
 
-import { activeWorkflowStore, channelStore, taskStore, workflowStore } from '../../stores'
+import { activeWorkflowStore, channelStore, taskStore, workflowStore } from '../stores'
 import { connect, type Channel } from '$lib/channel'
 import type { Maybe } from '$lib'
 
