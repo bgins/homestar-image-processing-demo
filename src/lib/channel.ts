@@ -21,7 +21,6 @@ export type ChannelData = string | ArrayBufferLike | Blob | ArrayBufferView
 
 
 export async function connect() {
-  console.log('endpoint', import.meta.env)
   const channel = await createWssChannel(import.meta.env.VITE_WEBSOCKET_ENDPOINT, { handleMessage })
 
   channelStore.set(channel)
@@ -37,16 +36,16 @@ export async function connect() {
       // Check failed ping count for lost connection
       const failedPingCount = activeWorkflow.failedPingCount
 
-      if (failedPingCount > 3) {
+      if (failedPingCount >= import.meta.env.VITE_MAX_PING_RETRIES) {
         // Fail the workflow
         fail(activeWorkflow.id)
       } else {
         // Assume failure. We reset the count to zero in the message handler on pong.
         activeWorkflowStore.update(store => store ? ({ ...store, failedPingCount: failedPingCount + 1 }) : null)
       }
-    }, 10000)
+    }, import.meta.env.VITE_PING_INTERVAL)
 
-  }, 10000)
+  }, import.meta.env.VITE_PING_INTERVAL)
 }
 
 export const createWssChannel = async (
