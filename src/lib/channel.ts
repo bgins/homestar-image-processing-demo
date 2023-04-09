@@ -39,6 +39,9 @@ export async function connect() {
       if (failedPingCount >= import.meta.env.VITE_MAX_PING_RETRIES) {
         // Fail the workflow
         fail(activeWorkflow.id)
+
+        // Remove channel. Connection will be re-established on next workflow run.
+        channelStore.set(null)
       } else {
         // Assume failure. We reset the count to zero in the message handler on pong.
         activeWorkflowStore.update(store => store ? ({ ...store, failedPingCount: failedPingCount + 1 }) : null)

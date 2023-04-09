@@ -24,11 +24,14 @@ export type WorkflowId = 'one' | 'two'
 
 // RUN
 
-export function run(workflowId: WorkflowId) {
-  const channel = getStore(channelStore)
+export async function run(workflowId: WorkflowId) {
+  let channel = getStore(channelStore)
   const tasks = getStore(taskStore)
 
-  if (!channel) connect()
+  if (!channel) {
+    await connect()
+    channel = getStore(channelStore)
+  }
 
   // Reset workflow UI and state
   reset(workflowId)
