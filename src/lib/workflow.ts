@@ -102,9 +102,8 @@ export function fail(workflowId: WorkflowId) {
 export async function handleMessage(event: MessageEvent) {
   const data = await event.data.text()
 
-  // TODO Change to pong
-  if (data === 'ping') {
-    // Reset failed ping count
+  // Reset ping count on echoed ping or pong from server
+  if (data === 'ping' || data === 'pong') {
     activeWorkflowStore.update(store => store ? { ...store, failedPingCount: 0 } : null)
 
     return
