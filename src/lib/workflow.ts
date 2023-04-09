@@ -53,8 +53,10 @@ export async function run(workflowId: WorkflowId) {
   // Send run command to server
   channel?.send(JSON.stringify({ run: workflowId }))
 
-  // Emulate with an echo server
-  emulate(workflowId, channel)
+  if (import.meta.env.VITE_EMULATION_MODE === 'true') {
+    // Emulate with an echo server
+    emulate(workflowId, channel)
+  }
 }
 
 
