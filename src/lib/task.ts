@@ -1,7 +1,7 @@
 export type Task = {
   id: number
   workflowId: 'one' | 'two'
-  label: string
+  operation: TaskOperation
   active: boolean
   status: TaskStatus
   message: string
@@ -19,3 +19,5 @@ export type Receipt = {
 }
 
 export type TaskStatus = 'waiting' | 'skipped' | 'success' | 'failure'
+
+export type TaskOperation = 'crop' | 'rotate' | 'blur' | 'grayscale'

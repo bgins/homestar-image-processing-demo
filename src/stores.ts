@@ -1,15 +1,36 @@
-import { derived, writable } from "svelte/store"
-import type { Readable, Writable } from "svelte/store"
+import { derived, writable } from 'svelte/store'
+import type { Readable, Writable } from 'svelte/store'
 import type { NodeType } from 'svelvet'
 
-import type { Task } from "$lib/task"
+import type { Channel } from '$lib/channel'
+import type { Workflow, WorkflowId, WorkflowState } from '$lib/workflow'
+import type { Maybe } from '$lib'
+import type { Task } from '$lib/task'
 
-export const taskStore: Writable<Record<string, Task[]>> = writable({
+const catResponse = await fetch('./spacecat')
+const base64Cat = await catResponse.text()
+
+export const channelStore: Writable<Maybe<Channel>> = writable(null)
+
+export const workflowStore: Writable<Record<string, Workflow>> = writable({
+  one: {
+    id: 'one',
+    status: 'waiting'
+  },
+  two: {
+    id: 'two',
+    status: 'waiting'
+  }
+})
+
+export const activeWorkflowStore: Writable<Maybe<WorkflowState>> = writable(null)
+
+export const taskStore: Writable<Record<WorkflowId, Task[]>> = writable({
   one: [
     {
       id: 1,
       workflowId: 'one',
-      label: 'Crop',
+      operation: 'crop',
       message: 'Waiting for task to complete',
       active: false,
       status: 'waiting'
@@ -17,7 +38,7 @@ export const taskStore: Writable<Record<string, Task[]>> = writable({
     {
       id: 2,
       workflowId: 'one',
-      label: 'Rotate',
+      operation: 'rotate',
       message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
@@ -25,7 +46,7 @@ export const taskStore: Writable<Record<string, Task[]>> = writable({
     {
       id: 3,
       workflowId: 'one',
-      label: 'Saturate',
+      operation: 'blur',
       message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
@@ -35,7 +56,7 @@ export const taskStore: Writable<Record<string, Task[]>> = writable({
     {
       id: 1,
       workflowId: 'two',
-      label: 'Crop',
+      operation: 'crop',
       message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
@@ -43,7 +64,7 @@ export const taskStore: Writable<Record<string, Task[]>> = writable({
     {
       id: 2,
       workflowId: 'two',
-      label: 'Rotate',
+      operation: 'rotate',
       message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
@@ -51,7 +72,7 @@ export const taskStore: Writable<Record<string, Task[]>> = writable({
     {
       id: 3,
       workflowId: 'two',
-      label: 'Grayscale',
+      operation: 'grayscale',
       message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
@@ -69,7 +90,7 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
         id: String(index + idOffset),
         position: { x: 500 + ((index + 1) * 250), y: 150 },
         data: {
-          html: `<img src="synthcat.jpg" draggable="false" />`
+          html: `<img src="data:image/gif;base64,${task.receipt?.out[1]}" draggable="false" />`
         },
         width: 150,
         height: 150,
@@ -89,7 +110,7 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
         id: String(index + idOffset),
         position: { x: 500 + (index  * 250), y: 450 },
         data: {
-          html: `<img src="synthcat.jpg" draggable="false" />`
+          html: `<img src="data:image/gif;base64,${task.receipt?.out[1]}" draggable="false" />`
         },
         width: 150,
         height: 150,
@@ -105,7 +126,7 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
       id: '1',
       position: { x: 500, y: 300 },
       data: {
-        html: `<img src="synthcat.jpg" draggable="false" />`
+        html: `<img src="data:image/gif;base64,${base64Cat}" draggable="false" />`
       },
       width: 150,
       height: 150,
@@ -122,15 +143,19 @@ export const edgeStore = derived(nodeStore, $nodeStore => {
   let edges: any[] = []
   const nodeIds = $nodeStore.map(node => node.id)
 
-  if (nodeIds.includes("1") && nodeIds.includes("2")) {
+  if (nodeIds.includes('1') && nodeIds.includes('2')) {
     edges = [ ...edges, { id: 'e1-2', source: '1', target: '2', label: 'Crop', arrow: true } ]
   }
 
-  if (nodeIds.includes("2") && nodeIds.includes("3")) {
+  if (nodeIds.includes('2') && nodeIds.includes('3')) {
     edges = [ ...edges, { id: 'e2-3', source: '2', target: '3', label: 'Rotate', arrow: true } ]
   }
 
-  if (nodeIds.includes("1") && nodeIds.includes("7")) {
+  if (nodeIds.includes('3') && nodeIds.includes('4')) {
+    edges = [ ...edges, { id: 'e3-4', source: '3', target: '4', label: 'Blur', arrow: true } ]
+  }
+
+  if (nodeIds.includes('1') && nodeIds.includes('7')) {
     edges = [ ...edges, { id: 'e1-7', source: '1', target: '7', label: 'Crop-Rotate-Grayscale', arrow: true, type: 'bezier' } ]
   }
 
