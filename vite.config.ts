@@ -3,7 +3,8 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   build: {
-    sourcemap: true
+    sourcemap: true,
+    target: 'es2022'
   },
   plugins: [sveltekit()],
   test: {
