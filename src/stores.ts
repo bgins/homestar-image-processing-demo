@@ -7,6 +7,8 @@ import type { Workflow, WorkflowId, WorkflowState } from '$lib/workflow'
 import type { Maybe } from '$lib'
 import type { Task } from '$lib/task'
 
+const catResponse = await fetch('./spacecat')
+const base64Cat = await catResponse.text()
 
 export const channelStore: Writable<Maybe<Channel>> = writable(null)
 
@@ -88,7 +90,7 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
         id: String(index + idOffset),
         position: { x: 500 + ((index + 1) * 250), y: 150 },
         data: {
-          html: `<img src="synthcat.jpg" draggable="false" />`
+          html: `<img src="data:image/gif;base64,${task.receipt?.out[1]}" draggable="false" />`
         },
         width: 150,
         height: 150,
@@ -108,7 +110,7 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
         id: String(index + idOffset),
         position: { x: 500 + (index  * 250), y: 450 },
         data: {
-          html: `<img src="synthcat.jpg" draggable="false" />`
+          html: `<img src="data:image/gif;base64,${task.receipt?.out[1]}" draggable="false" />`
         },
         width: 150,
         height: 150,
@@ -124,7 +126,7 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
       id: '1',
       position: { x: 500, y: 300 },
       data: {
-        html: `<img src="synthcat.jpg" draggable="false" />`
+        html: `<img src="data:image/gif;base64,${base64Cat}" draggable="false" />`
       },
       width: 150,
       height: 150,

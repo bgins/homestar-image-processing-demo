@@ -223,12 +223,15 @@ function sendEmulated(status: TaskStatus, workflowId: string, op: TaskOperation,
   })
 }
 
+const catResponse = await fetch('./spacecat')
+const base64Cat = await catResponse.text()
+
 const sampleReceipt: Receipt = {
   cid: 'bafyrmiczrugtx6jj42qbwd2ctlmj766th2nwzfsqmvathjdxk63rwkkvpi',
   instruction: 'bafyrmiekhdmnekp6kx6fl22btn6skx7mksl2p64rat6etwcykzpfqow67a',
   iss: null,
   meta: null,
-  out: [ 'ok', 'base64image' ],
+  out: [ 'ok', `${base64Cat}` ],
   prf: [],
   ran: 'bafkr4ickinozehpaz72vtgpbhhqpf6v2fi67rvr6uis52bwsesoss6vinq'
 }
