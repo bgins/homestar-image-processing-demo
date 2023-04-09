@@ -126,7 +126,7 @@ export async function handleMessage(event: MessageEvent) {
 
     const taskId = activeWorkflow.step + 1
     const status = message.status
-    const receipt = message.receipt
+    const receipt = parseReceipt(message.receipt)
 
     // Update task in UI
     taskStore.update(store => {
@@ -164,6 +164,29 @@ export async function handleMessage(event: MessageEvent) {
 
   } else {
     console.warn('Received an unexpected message', message)
+  }
+}
+
+function parseReceipt(raw: {
+  cid: Record<'/', string>
+  instruction: Record<'/', string>
+  iss: string | null
+  meta: string | null
+  out: [ 'ok' | 'error', Record<'/', Record<'bytes', string>> ]
+  prf: string[]
+  ran: Record<'/', string>
+}): Receipt {
+  return {
+    cid: raw.cid[ '/' ],
+    instruction: raw.instruction[ '/' ],
+    iss: raw.iss,
+    meta: raw.meta,
+    out: [
+      raw.out[ 0 ],
+      raw.out[ 1 ][ '/' ].bytes
+    ],
+    prf: raw.prf,
+    ran: raw.ran[ '/' ]
   }
 }
 
@@ -226,12 +249,21 @@ function sendEmulated(status: TaskStatus, workflowId: string, op: TaskOperation,
 const catResponse = await fetch('./spacecat')
 const base64Cat = await catResponse.text()
 
-const sampleReceipt: Receipt = {
-  cid: 'bafyrmiczrugtx6jj42qbwd2ctlmj766th2nwzfsqmvathjdxk63rwkkvpi',
-  instruction: 'bafyrmiekhdmnekp6kx6fl22btn6skx7mksl2p64rat6etwcykzpfqow67a',
-  iss: null,
-  meta: null,
-  out: [ 'ok', `${base64Cat}` ],
-  prf: [],
-  ran: 'bafkr4ickinozehpaz72vtgpbhhqpf6v2fi67rvr6uis52bwsesoss6vinq'
+const sampleReceipt = {
+  'cid': {
+    "/": "bafyrmiczrugtx6jj42qbwd2ctlmj766th2nwzfsqmvathjdxk63rwkkvpi"
+  },
+  "instruction": {
+    "/": "bafyrmiekhdmnekp6kx6fl22btn6skx7mksl2p64rat6etwcykzpfqow67a"
+  },
+  "iss": null,
+  "meta": null,
+  "out": [
+    "ok",
+    { '/': { 'bytes': `${base64Cat}` } }
+  ],
+  "prf": [],
+  "ran": {
+    "/": "bafkr4ickinozehpaz72vtgpbhhqpf6v2fi67rvr6uis52bwsesoss6vinq"
+  }
 }
