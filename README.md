@@ -1,38 +1,68 @@
-# create-svelte
+# Homestar Image Processing Demo
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Homestar Image Processing Demo is a frontend for demonstrating Homestar workflows. It requires a backend to run the workflows.
 
-## Creating a project
+## Setup
 
-If you're seeing this, you've probably already done this step. Congrats!
+Install dependencies.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+```shell
+npm install
 ```
 
-## Developing
+## Develop
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Work on the application in local development.
 
-```bash
+```shell
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+Navigate to `localhost:5173` in your web browser.
 
-To create a production version of your app:
+## Build
 
-```bash
+Export a static build.
+
+```shell
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+The build outputs the static site to the `build` directory.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## Configure
+
+The application can be configured in [.env](/.env):
+
+- `VITE_WEBSOCKET_ENDPOINT`. Backend websocket endpoint.
+- `VITE_PING_INTERVAL`. Ping interval for heartbeat check over websocket connection.
+- `VITE_MAX_PING_RETRIES`. Max retries before a workflow is failed.
+- `VITE_EMULATION_MODE`. Enable emulation with an echo server. Primarily for testing the frontend, does not process images.
+
+## Publish
+
+The built site publishes with the [Fission CLI](https://guide.fission.codes/developers/cli) and the [Fission GH publish action](https://github.com/fission-suite/publish-action). Publishing from the command line is configured in [fission.yaml](fission.yaml), and the GitHub publish action is configured in [publish.yml](.github/workflows/publish.yml).
+
+To setup publishing with the Fission CLI:
+
+1. [Install the CLI](https://guide.fission.codes/developers/installation)
+2. Run `fission setup` to make a Fission account
+3. Run `npm run build` to build the app
+4. Delete `fission.yaml`
+5. Run `fission app register` to register a new Fission app (accept the `./build` directory suggestion for your build directory)
+6. Run `fission app publish` to publish your app to the web
+
+After publishing, your app will be available online at the domain assigned by the register command.
+
+To set up the GitHub publish action:
+
+1. Reigster the app with the CLI
+2. Export your machine key with `base64 ~/.config/fission/key/machine_id.ed25519`
+3. Add your machine key as a GH Repository secret named `FISSION_MACHINE_KEY`
+4. Update the `publish.yml` with the name of your registered app
+
+See the [Fission Guide](https://guide.fission.codes/developers/installation) and the publish action README for more details.
+
+## License
+
+The source code for this template is available under the Apache 2.0 license.
