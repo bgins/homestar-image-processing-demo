@@ -69,7 +69,12 @@ function reset(workflowId: WorkflowId) {
   const status: TaskStatus = 'waiting'
 
   taskStore.update(store => {
-    const updatedTasks = store[ workflowId ].map(t => ({ ...t, status }))
+    const updatedTasks = store[ workflowId ].map(t => ({
+      ...t,
+      status,
+      message: getTaskMessage(status),
+      receipt: null
+    }))
     return { ...store, [ workflowId ]: updatedTasks }
   })
 }
@@ -140,7 +145,7 @@ export async function handleMessage(event: MessageEvent) {
           ? {
             ...t,
             status,
-            message: getTaskContent(status),
+            message: getTaskMessage(status),
             receipt
           }
           : t
@@ -195,7 +200,7 @@ function parseReceipt(raw: {
   }
 }
 
-function getTaskContent(status: TaskStatus) {
+function getTaskMessage(status: TaskStatus) {
   switch (status) {
     case 'waiting':
       return 'Waiting for task to complete.'
