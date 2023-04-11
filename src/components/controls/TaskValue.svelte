@@ -1,6 +1,6 @@
 <script lang="ts">
   import clipboardCopy from 'clipboard-copy'
-  import { quintIn, quintOut } from 'svelte/easing'
+  import { quintIn } from 'svelte/easing'
   import { fade } from 'svelte/transition'
 
   import Check from '$components/icons/Check.svelte'
@@ -23,7 +23,7 @@
   }
 </script>
 
-<div class="grid grid-flow-row pl-1 pt-2 text-sm text-slate-700">
+<div class="grid grid-flow-row pl-1 pt-1.5 text-sm text-slate-700">
   <span class="flex flex-row items-center gap-1 w-52">
     {label}
     {#if val}

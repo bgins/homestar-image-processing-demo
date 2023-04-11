@@ -201,13 +201,13 @@ function getTaskContent(status: TaskStatus) {
       return 'Waiting for task to complete.'
 
     case 'success':
-      return 'Task completed successfully.'
+      return 'Task succeeded.'
 
     case 'failure':
-      return 'Task failed to complete.'
+      return 'Task failed.'
 
     case 'skipped':
-      return 'Task completed in another workflow.'
+      return 'Task skipped.'
   }
 }
 
