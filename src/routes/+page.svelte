@@ -12,6 +12,8 @@
   let nodes: any[] = []
   let edges: any[] = []
   let showWorkflowModal = false
+  let windowHeight = window.innerHeight
+  let windowWidth = window.innerWidth
 
   const unsubscribeNodeStore = nodeStore.subscribe(store => {
     nodes = store
@@ -20,6 +22,11 @@
   const unsubscribeEdgeStore = edgeStore.subscribe(store => {
     edges = store
   })
+
+  function handleWindowResize(event: Event) {
+    windowHeight = window.innerHeight
+    windowWidth = window.innerWidth
+  }
 
   function toggleWorflowModal() {
     showWorkflowModal = !showWorkflowModal
@@ -34,6 +41,8 @@
   })
 </script>
 
+<svelte:window on:resize={handleWindowResize} />
+
 <Header on:workflow={toggleWorflowModal} />
 {#if showWorkflowModal}
   <WorkflowDetail />
@@ -42,9 +51,9 @@
 <Svelvet
   {nodes}
   {edges}
-  width={window.innerWidth}
-  height={window.innerHeight}
+  width={windowWidth}
+  height={windowHeight}
   initialZoom={1.25}
   initialLocation={{ x: 0, y: 0 }}
-  boundary={{ x: window.innerWidth, y: window.innerHeight }}
+  boundary={{ x: windowWidth + 200, y: windowHeight + 200 }}
 />
