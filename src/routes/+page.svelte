@@ -7,9 +7,11 @@
   import { edgeStore, nodeStore } from '../stores'
   import Controls from '$components/Controls.svelte'
   import Header from '$components/Header.svelte'
+  import WorkflowDetail from '$components/WorkflowDetail.svelte'
 
   let nodes: any[] = []
   let edges: any[] = []
+  let showWorkflowModal = false
 
   const unsubscribeNodeStore = nodeStore.subscribe(store => {
     nodes = store
@@ -18,6 +20,10 @@
   const unsubscribeEdgeStore = edgeStore.subscribe(store => {
     edges = store
   })
+
+  function toggleWorflowModal() {
+    showWorkflowModal = !showWorkflowModal
+  }
 
   // Connect to websocket server
   connect()
@@ -28,7 +34,10 @@
   })
 </script>
 
-<Header />
+<Header on:workflow={toggleWorflowModal} />
+{#if showWorkflowModal}
+  <WorkflowDetail />
+{/if}
 <Controls />
 <Svelvet
   {nodes}

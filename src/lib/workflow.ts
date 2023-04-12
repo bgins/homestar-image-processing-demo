@@ -217,6 +217,53 @@ function getTaskMessage(status: TaskStatus) {
 }
 
 
+// JSON WORKFLOWS
+
+export const workflowOneJson = {
+  tasks: [
+    {
+      cause: null,
+      meta: {
+        fuel: 18446744073709552000,
+        time: 100000
+      },
+      prf: [],
+      run: {
+        input: {
+          args: [1],
+          func: 'add_one'
+        },
+        nnc: '',
+        op: 'wasm/run',
+        rsc: 'ipfs://bafkreidztuwoszw2dfnzufjpsjmzj67x574qcdm2autnhnv43o3t4zmh7i'
+      }
+    },
+    {
+      cause: null,
+      meta: {
+        fuel: 18446744073709552000,
+        time: 100000
+      },
+      prf: [],
+      run: {
+        input: {
+          args: [
+            {
+              'await/ok': {
+                '/': 'bafyrmic6rpwhn6zxscpxxsiskpyl6ozrkx56wic2j5bfvu2dbfdhgspvta'
+              }
+            }
+          ],
+          func: 'add_one'
+        },
+        nnc: '',
+        op: 'wasm/run',
+        rsc: 'ipfs://bafkreidztuwoszw2dfnzufjpsjmzj67x574qcdm2autnhnv43o3t4zmh7i'
+      }
+    }
+  ]
+}
+
 
 // EMULATION
 
