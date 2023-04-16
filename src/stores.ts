@@ -82,7 +82,7 @@ export const taskStore: Writable<Record<WorkflowId, Task[]>> = writable({
 
 export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => {
   const workflowOneNodes = $taskStore['one'].reduce((nodes, task, index) => {
-    if (task.status === 'success') {
+    if (task.status === 'success' || task.status === 'skipped') {
       const idOffset = 2
 
       // @ts-ignore
@@ -105,7 +105,7 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
   }, [])
 
   const workflowTwoNodes = $taskStore['two'].reduce((nodes, task, index) => {
-    if (task.status === 'success') {
+    if (task.status === 'success' || task.status === 'skipped') {
       const idOffset = 5
 
       // @ts-ignore
@@ -113,7 +113,7 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
         ...nodes,
         {
           id: String(index + idOffset),
-          position: { x: 500 + index * 250, y: 450 },
+          position: { x: 500 + (index + 1) * 250, y: 450 },
           data: {
             html: `<img src="data:image/png;base64,${task.receipt?.out[1]}" draggable="false" />`
           },
@@ -148,30 +148,32 @@ export const edgeStore = derived(nodeStore, $nodeStore => {
   let edges: any[] = []
   const nodeIds = $nodeStore.map(node => node.id)
 
+  // Workflow One
+
   if (nodeIds.includes('1') && nodeIds.includes('2')) {
     edges = [...edges, { id: 'e1-2', source: '1', target: '2', label: 'Crop', arrow: true }]
   }
 
   if (nodeIds.includes('2') && nodeIds.includes('3')) {
-    edges = [...edges, { id: 'e2-3', source: '2', target: '3', label: 'Rotate', arrow: true }]
+    edges = [...edges, { id: 'e2-3', source: '2', target: '3', label: 'Rotate90', arrow: true }]
   }
 
   if (nodeIds.includes('3') && nodeIds.includes('4')) {
     edges = [...edges, { id: 'e3-4', source: '3', target: '4', label: 'Blur', arrow: true }]
   }
 
-  if (nodeIds.includes('1') && nodeIds.includes('7')) {
-    edges = [
-      ...edges,
-      {
-        id: 'e1-7',
-        source: '1',
-        target: '7',
-        label: 'Crop-Rotate-Grayscale',
-        arrow: true,
-        type: 'bezier'
-      }
-    ]
+  // Workflow Two
+
+  if (nodeIds.includes('1') && nodeIds.includes('5')) {
+    edges = [...edges, { id: 'e1-5', source: '1', target: '5', label: 'Crop', arrow: true }]
+  }
+
+  if (nodeIds.includes('5') && nodeIds.includes('6')) {
+    edges = [...edges, { id: 'e5-6', source: '5', target: '6', label: 'Rotate90', arrow: true }]
+  }
+
+  if (nodeIds.includes('6') && nodeIds.includes('7')) {
+    edges = [...edges, { id: 'e6-7', source: '6', target: '7', label: 'Grayscale', arrow: true }]
   }
 
   return edges
