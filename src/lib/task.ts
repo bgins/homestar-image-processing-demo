@@ -13,11 +13,11 @@ export type Receipt = {
   instruction: string
   iss: string | null
   meta: string | null
-  out: [ 'ok' | 'error', string ]
+  out: ['ok' | 'error', string]
   prf: string[]
   ran: string
 }
 
 export type TaskStatus = 'waiting' | 'skipped' | 'success' | 'failure'
 
-export type TaskOperation = 'crop' | 'rotate' | 'blur' | 'grayscale'
+export type TaskOperation = 'crop' | 'rotate90' | 'blur' | 'grayscale'

@@ -6,7 +6,6 @@ import { activeWorkflowStore, channelStore, taskStore, workflowStore } from '../
 import { connect, type Channel } from '$lib/channel'
 import type { Maybe } from '$lib'
 
-
 export type Workflow = {
   id: WorkflowId
   status: 'waiting' | 'working'
@@ -20,7 +19,6 @@ export type WorkflowState = {
 }
 
 export type WorkflowId = 'one' | 'two'
-
 
 // RUN
 
@@ -39,7 +37,7 @@ export async function run(workflowId: WorkflowId) {
   // Initialize active workflow
   activeWorkflowStore.set({
     id: workflowId,
-    tasks: tasks[ workflowId ].map(task => task.operation),
+    tasks: tasks[workflowId].map(task => task.operation),
     step: 0,
     failedPingCount: 0
   })
@@ -47,7 +45,7 @@ export async function run(workflowId: WorkflowId) {
   // Set workflow status to working
   workflowStore.update(workflows => ({
     ...workflows,
-    [ workflowId ]: { ...workflows[ workflowId ], status: 'working' }
+    [workflowId]: { ...workflows[workflowId], status: 'working' }
   }))
 
   // Send run command to server
@@ -59,7 +57,6 @@ export async function run(workflowId: WorkflowId) {
   }
 }
 
-
 /**
  * Reset tasks to waiting and workflow to starting state
  *
@@ -69,13 +66,13 @@ function reset(workflowId: WorkflowId) {
   const status: TaskStatus = 'waiting'
 
   taskStore.update(store => {
-    const updatedTasks = store[ workflowId ].map(t => ({
+    const updatedTasks = store[workflowId].map(t => ({
       ...t,
       status,
       message: getTaskMessage(status),
       receipt: null
     }))
-    return { ...store, [ workflowId ]: updatedTasks }
+    return { ...store, [workflowId]: updatedTasks }
   })
 }
 
@@ -86,7 +83,7 @@ function reset(workflowId: WorkflowId) {
  */
 export function fail(workflowId: WorkflowId) {
   taskStore.update(store => {
-    const updatedTasks = store[ workflowId ].map(t => {
+    const updatedTasks = store[workflowId].map(t => {
       if (t.status !== 'success' && t.status !== 'skipped') {
         const status: TaskStatus = 'failure'
 
@@ -96,16 +93,15 @@ export function fail(workflowId: WorkflowId) {
       }
     })
 
-    return { ...store, [ workflowId ]: updatedTasks }
+    return { ...store, [workflowId]: updatedTasks }
   })
 
   // Set workflow status to waiting
   workflowStore.update(workflows => ({
     ...workflows,
-    [ workflowId ]: { ...workflows[ workflowId ], status: 'waiting' }
+    [workflowId]: { ...workflows[workflowId], status: 'waiting' }
   }))
 }
-
 
 // HANDLER
 
@@ -114,7 +110,7 @@ export async function handleMessage(event: MessageEvent) {
 
   // Reset ping count on echoed ping or pong from server
   if (data === 'ping' || data === 'pong') {
-    activeWorkflowStore.update(store => store ? { ...store, failedPingCount: 0 } : null)
+    activeWorkflowStore.update(store => (store ? { ...store, failedPingCount: 0 } : null))
 
     return
   }
@@ -129,7 +125,9 @@ export async function handleMessage(event: MessageEvent) {
       return
     }
 
-    if (message.op !== activeWorkflow.tasks[ activeWorkflow.step ]) {
+    if (message.op !== activeWorkflow.tasks[activeWorkflow.step]) {
+      console.log(message.op)
+      console.log(activeWorkflow.tasks[activeWorkflow.step])
       console.error('Received a receipt that did not match the expected workflow step')
       return
     }
@@ -140,18 +138,18 @@ export async function handleMessage(event: MessageEvent) {
 
     // Update task in UI
     taskStore.update(store => {
-      const updatedTasks = store[ activeWorkflow.id ].map(t =>
+      const updatedTasks = store[activeWorkflow.id].map(t =>
         t.id === taskId
           ? {
-            ...t,
-            status,
-            message: getTaskMessage(status),
-            receipt
-          }
+              ...t,
+              status,
+              message: getTaskMessage(status),
+              receipt
+            }
           : t
       )
 
-      return { ...store, [ activeWorkflow.id ]: updatedTasks }
+      return { ...store, [activeWorkflow.id]: updatedTasks }
     })
 
     // Log receipt
@@ -161,17 +159,15 @@ export async function handleMessage(event: MessageEvent) {
       // Workflow is done. Reset workflow status to waiting.
       workflowStore.update(workflows => ({
         ...workflows,
-        [ activeWorkflow.id ]: { ...workflows[ activeWorkflow.id ], status: 'waiting' }
+        [activeWorkflow.id]: { ...workflows[activeWorkflow.id], status: 'waiting' }
       }))
 
       // Deactivate workflow
       activeWorkflowStore.set(null)
-
     } else {
       // Increment workflow step
-      activeWorkflowStore.update(store => store ? ({ ...store, step: store.step + 1 }) : null)
+      activeWorkflowStore.update(store => (store ? { ...store, step: store.step + 1 } : null))
     }
-
   } else {
     console.warn('Received an unexpected message', message)
   }
@@ -182,21 +178,18 @@ function parseReceipt(raw: {
   instruction: Record<'/', string>
   iss: string | null
   meta: string | null
-  out: [ 'ok' | 'error', Record<'/', Record<'bytes', string>> ]
+  out: ['ok' | 'error', Record<'/', Record<'bytes', string>>]
   prf: string[]
   ran: Record<'/', string>
 }): Receipt {
   return {
-    cid: raw.cid[ '/' ],
-    instruction: raw.instruction[ '/' ],
+    cid: raw.cid['/'],
+    instruction: raw.instruction['/'],
     iss: raw.iss,
     meta: raw.meta,
-    out: [
-      raw.out[ 0 ],
-      raw.out[ 1 ][ '/' ].bytes
-    ],
+    out: [raw.out[0], raw.out[1]['/'].bytes],
     prf: raw.prf,
-    ran: raw.ran[ '/' ]
+    ran: raw.ran['/']
   }
 }
 
@@ -216,7 +209,6 @@ function getTaskMessage(status: TaskStatus) {
   }
 }
 
-
 // JSON WORKFLOWS
 
 export const workflowOneJson = {
@@ -230,12 +222,22 @@ export const workflowOneJson = {
       prf: [],
       run: {
         input: {
-          args: [1],
-          func: 'add_one'
+          args: [
+            {
+              '/': 'bafybeifxw3ssa2hqcfqstn34t6ftmab7cmrcz35pmglhb73oq3p3ab2lsy'
+            },
+            150,
+            350,
+            500,
+            500,
+            1080,
+            1080
+          ],
+          func: 'crop'
         },
         nnc: '',
         op: 'wasm/run',
-        rsc: 'ipfs://bafkreidztuwoszw2dfnzufjpsjmzj67x574qcdm2autnhnv43o3t4zmh7i'
+        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
       }
     },
     {
@@ -250,20 +252,129 @@ export const workflowOneJson = {
           args: [
             {
               'await/ok': {
-                '/': 'bafyrmic6rpwhn6zxscpxxsiskpyl6ozrkx56wic2j5bfvu2dbfdhgspvta'
+                '/': 'bafyrmih62pwbqlvlr6zqanownd4mduo6ttc6bffzbqjmo5z3u7zadw6ppi'
               }
-            }
+            },
+            500,
+            500
           ],
-          func: 'add_one'
+          func: 'rotate90'
         },
         nnc: '',
         op: 'wasm/run',
-        rsc: 'ipfs://bafkreidztuwoszw2dfnzufjpsjmzj67x574qcdm2autnhnv43o3t4zmh7i'
+        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
+      }
+    },
+    {
+      cause: null,
+      meta: {
+        fuel: 18446744073709552000,
+        time: 100000
+      },
+      prf: [],
+      run: {
+        input: {
+          args: [
+            {
+              'await/ok': {
+                '/': 'bafyrmiaridcyi7fuu5k5ryswfgmsjxfonrzlwjvekmq74fdwvys6rkmdfi'
+              }
+            },
+            2.1,
+            500,
+            500
+          ],
+          func: 'blur'
+        },
+        nnc: '',
+        op: 'wasm/run',
+        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
       }
     }
   ]
 }
 
+export const workflowTwoJson = {
+  tasks: [
+    {
+      cause: null,
+      meta: {
+        fuel: 18446744073709552000,
+        time: 100000
+      },
+      prf: [],
+      run: {
+        input: {
+          args: [
+            {
+              '/': 'bafybeifxw3ssa2hqcfqstn34t6ftmab7cmrcz35pmglhb73oq3p3ab2lsy'
+            },
+            150,
+            350,
+            500,
+            500,
+            1080,
+            1080
+          ],
+          func: 'crop'
+        },
+        nnc: '',
+        op: 'wasm/run',
+        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
+      }
+    },
+    {
+      cause: null,
+      meta: {
+        fuel: 18446744073709552000,
+        time: 100000
+      },
+      prf: [],
+      run: {
+        input: {
+          args: [
+            {
+              'await/ok': {
+                '/': 'bafyrmih62pwbqlvlr6zqanownd4mduo6ttc6bffzbqjmo5z3u7zadw6ppi'
+              }
+            },
+            500,
+            500
+          ],
+          func: 'rotate90'
+        },
+        nnc: '',
+        op: 'wasm/run',
+        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
+      }
+    },
+    {
+      cause: null,
+      meta: {
+        fuel: 18446744073709552000,
+        time: 100000
+      },
+      prf: [],
+      run: {
+        input: {
+          args: [
+            {
+              'await/ok': {
+                '/': 'bafyrmiaridcyi7fuu5k5ryswfgmsjxfonrzlwjvekmq74fdwvys6rkmdfi'
+              }
+            },
+            500,
+            500
+          ],
+          func: 'grayscale'
+        },
+        nnc: '',
+        op: 'wasm/run',
+        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
+      }
+    }
+  ]
+}
 
 // EMULATION
 
@@ -276,17 +387,23 @@ function emulate(workflowId: string, channel: Maybe<Channel>) {
   if (workflowId === 'one') {
     Promise.resolve()
       .then(() => sendEmulated('success', 'one', 'crop', channel, 500))
-      .then(() => sendEmulated('success', 'one', 'rotate', channel, 1500))
+      .then(() => sendEmulated('success', 'one', 'rotate90', channel, 1500))
       .then(() => sendEmulated('success', 'one', 'blur', channel, 20000))
   } else if (workflowId === 'two') {
     Promise.resolve()
       .then(() => sendEmulated('skipped', 'two', 'crop', channel, 200))
-      .then(() => sendEmulated('skipped', 'two', 'rotate', channel, 200))
+      .then(() => sendEmulated('skipped', 'two', 'rotate90', channel, 200))
       .then(() => sendEmulated('success', 'two', 'grayscale', channel, 1500))
   }
 }
 
-function sendEmulated(status: TaskStatus, workflowId: string, op: TaskOperation, channel: Channel, delay: number) {
+function sendEmulated(
+  status: TaskStatus,
+  workflowId: string,
+  op: TaskOperation,
+  channel: Channel,
+  delay: number
+) {
   return new Promise(resolve => {
     setTimeout(() => {
       const message = JSON.stringify({
@@ -307,20 +424,17 @@ const catResponse = await fetch('./spacecat')
 const base64Cat = await catResponse.text()
 
 const sampleReceipt = {
-  'cid': {
-    "/": "bafyrmiczrugtx6jj42qbwd2ctlmj766th2nwzfsqmvathjdxk63rwkkvpi"
+  cid: {
+    '/': 'bafyrmiczrugtx6jj42qbwd2ctlmj766th2nwzfsqmvathjdxk63rwkkvpi'
   },
-  "instruction": {
-    "/": "bafyrmiekhdmnekp6kx6fl22btn6skx7mksl2p64rat6etwcykzpfqow67a"
+  instruction: {
+    '/': 'bafyrmiekhdmnekp6kx6fl22btn6skx7mksl2p64rat6etwcykzpfqow67a'
   },
-  "iss": null,
-  "meta": null,
-  "out": [
-    "ok",
-    { '/': { 'bytes': `${base64Cat}` } }
-  ],
-  "prf": [],
-  "ran": {
-    "/": "bafkr4ickinozehpaz72vtgpbhhqpf6v2fi67rvr6uis52bwsesoss6vinq"
+  iss: null,
+  meta: null,
+  out: ['ok', { '/': { bytes: `${base64Cat}` } }],
+  prf: [],
+  ran: {
+    '/': 'bafkr4ickinozehpaz72vtgpbhhqpf6v2fi67rvr6uis52bwsesoss6vinq'
   }
 }

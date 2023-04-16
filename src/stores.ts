@@ -38,7 +38,7 @@ export const taskStore: Writable<Record<WorkflowId, Task[]>> = writable({
     {
       id: 2,
       workflowId: 'one',
-      operation: 'rotate',
+      operation: 'rotate90',
       message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
@@ -64,7 +64,7 @@ export const taskStore: Writable<Record<WorkflowId, Task[]>> = writable({
     {
       id: 2,
       workflowId: 'two',
-      operation: 'rotate',
+      operation: 'rotate90',
       message: 'Waiting for task to complete.',
       active: false,
       status: 'waiting'
@@ -81,42 +81,48 @@ export const taskStore: Writable<Record<WorkflowId, Task[]>> = writable({
 })
 
 export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => {
-  const workflowOneNodes = $taskStore[ 'one' ].reduce((nodes, task, index) => {
+  const workflowOneNodes = $taskStore['one'].reduce((nodes, task, index) => {
     if (task.status === 'success') {
       const idOffset = 2
 
       // @ts-ignore
-      nodes = [ ...nodes, {
-        id: String(index + idOffset),
-        position: { x: 500 + ((index + 1) * 250), y: 150 },
-        data: {
-          html: `<img src="data:image/gif;base64,${task.receipt?.out[1]}" draggable="false" />`
-        },
-        width: 150,
-        height: 150,
-        bgColor: 'white',
-        borderColor: 'transparent',
-      } ]
+      nodes = [
+        ...nodes,
+        {
+          id: String(index + idOffset),
+          position: { x: 500 + (index + 1) * 250, y: 150 },
+          data: {
+            html: `<img src="data:image/gif;base64,${task.receipt?.out[1]}" draggable="false" />`
+          },
+          width: 150,
+          height: 150,
+          bgColor: 'white',
+          borderColor: 'transparent'
+        }
+      ]
     }
     return nodes
   }, [])
 
-  const workflowTwoNodes = $taskStore[ 'two' ].reduce((nodes, task, index) => {
+  const workflowTwoNodes = $taskStore['two'].reduce((nodes, task, index) => {
     if (task.status === 'success') {
       const idOffset = 5
 
       // @ts-ignore
-      nodes = [ ...nodes, {
-        id: String(index + idOffset),
-        position: { x: 500 + (index  * 250), y: 450 },
-        data: {
-          html: `<img src="data:image/gif;base64,${task.receipt?.out[1]}" draggable="false" />`
-        },
-        width: 150,
-        height: 150,
-        bgColor: 'white',
-        borderColor: 'transparent',
-      } ]
+      nodes = [
+        ...nodes,
+        {
+          id: String(index + idOffset),
+          position: { x: 500 + index * 250, y: 450 },
+          data: {
+            html: `<img src="data:image/gif;base64,${task.receipt?.out[1]}" draggable="false" />`
+          },
+          width: 150,
+          height: 150,
+          bgColor: 'white',
+          borderColor: 'transparent'
+        }
+      ]
     }
     return nodes
   }, [])
@@ -131,32 +137,41 @@ export const nodeStore: Readable<NodeType[]> = derived(taskStore, $taskStore => 
       width: 150,
       height: 150,
       bgColor: 'white',
-      borderColor: 'transparent',
+      borderColor: 'transparent'
     },
     ...workflowOneNodes,
     ...workflowTwoNodes
   ]
 })
 
-
 export const edgeStore = derived(nodeStore, $nodeStore => {
   let edges: any[] = []
   const nodeIds = $nodeStore.map(node => node.id)
 
   if (nodeIds.includes('1') && nodeIds.includes('2')) {
-    edges = [ ...edges, { id: 'e1-2', source: '1', target: '2', label: 'Crop', arrow: true } ]
+    edges = [...edges, { id: 'e1-2', source: '1', target: '2', label: 'Crop', arrow: true }]
   }
 
   if (nodeIds.includes('2') && nodeIds.includes('3')) {
-    edges = [ ...edges, { id: 'e2-3', source: '2', target: '3', label: 'Rotate', arrow: true } ]
+    edges = [...edges, { id: 'e2-3', source: '2', target: '3', label: 'Rotate', arrow: true }]
   }
 
   if (nodeIds.includes('3') && nodeIds.includes('4')) {
-    edges = [ ...edges, { id: 'e3-4', source: '3', target: '4', label: 'Blur', arrow: true } ]
+    edges = [...edges, { id: 'e3-4', source: '3', target: '4', label: 'Blur', arrow: true }]
   }
 
   if (nodeIds.includes('1') && nodeIds.includes('7')) {
-    edges = [ ...edges, { id: 'e1-7', source: '1', target: '7', label: 'Crop-Rotate-Grayscale', arrow: true, type: 'bezier' } ]
+    edges = [
+      ...edges,
+      {
+        id: 'e1-7',
+        source: '1',
+        target: '7',
+        label: 'Crop-Rotate-Grayscale',
+        arrow: true,
+        type: 'bezier'
+      }
+    ]
   }
 
   return edges
