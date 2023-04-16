@@ -229,15 +229,13 @@ export const workflowOneJson = {
             150,
             350,
             500,
-            500,
-            1080,
-            1080
+            500
           ],
           func: 'crop'
         },
         nnc: '',
         op: 'wasm/run',
-        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
+        rsc: 'https://ipfs.io/ipfs/bafybeihzvrlcfqf6ffbp2juhuakspxj2bdsc54cabxnuxfvuqy5lvfxapy'
       }
     },
     {
@@ -252,17 +250,15 @@ export const workflowOneJson = {
           args: [
             {
               'await/ok': {
-                '/': 'bafyrmih62pwbqlvlr6zqanownd4mduo6ttc6bffzbqjmo5z3u7zadw6ppi'
+                '/': 'bafyrmibcwghzm2ndzsfp7ycvr6crrqluozu7xywsirlws7qmjze36lhfde'
               }
-            },
-            500,
-            500
+            }
           ],
           func: 'rotate90'
         },
         nnc: '',
         op: 'wasm/run',
-        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
+        rsc: 'https://ipfs.io/ipfs/bafybeihzvrlcfqf6ffbp2juhuakspxj2bdsc54cabxnuxfvuqy5lvfxapy'
       }
     },
     {
@@ -277,18 +273,16 @@ export const workflowOneJson = {
           args: [
             {
               'await/ok': {
-                '/': 'bafyrmiaridcyi7fuu5k5ryswfgmsjxfonrzlwjvekmq74fdwvys6rkmdfi'
+                '/': 'bafyrmieakkpstr6mh3cmpq5j73odo5t5m35zjhbxue5yhqsodhsohji3li'
               }
             },
-            2.1,
-            500,
-            500
+            20
           ],
           func: 'blur'
         },
         nnc: '',
         op: 'wasm/run',
-        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
+        rsc: 'https://ipfs.io/ipfs/bafybeihzvrlcfqf6ffbp2juhuakspxj2bdsc54cabxnuxfvuqy5lvfxapy'
       }
     }
   ]
@@ -312,15 +306,13 @@ export const workflowTwoJson = {
             150,
             350,
             500,
-            500,
-            1080,
-            1080
+            500
           ],
           func: 'crop'
         },
         nnc: '',
         op: 'wasm/run',
-        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
+        rsc: 'https://ipfs.io/ipfs/bafybeihzvrlcfqf6ffbp2juhuakspxj2bdsc54cabxnuxfvuqy5lvfxapy'
       }
     },
     {
@@ -335,17 +327,15 @@ export const workflowTwoJson = {
           args: [
             {
               'await/ok': {
-                '/': 'bafyrmih62pwbqlvlr6zqanownd4mduo6ttc6bffzbqjmo5z3u7zadw6ppi'
+                '/': 'bafyrmibcwghzm2ndzsfp7ycvr6crrqluozu7xywsirlws7qmjze36lhfde'
               }
-            },
-            500,
-            500
+            }
           ],
           func: 'rotate90'
         },
         nnc: '',
         op: 'wasm/run',
-        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
+        rsc: 'https://ipfs.io/ipfs/bafybeihzvrlcfqf6ffbp2juhuakspxj2bdsc54cabxnuxfvuqy5lvfxapy'
       }
     },
     {
@@ -360,17 +350,15 @@ export const workflowTwoJson = {
           args: [
             {
               'await/ok': {
-                '/': 'bafyrmiaridcyi7fuu5k5ryswfgmsjxfonrzlwjvekmq74fdwvys6rkmdfi'
+                '/': 'bafyrmieakkpstr6mh3cmpq5j73odo5t5m35zjhbxue5yhqsodhsohji3li'
               }
-            },
-            500,
-            500
+            }
           ],
           func: 'grayscale'
         },
         nnc: '',
         op: 'wasm/run',
-        rsc: 'https://ipfs.io/ipfs/bafkreibex7s4fg7wk34q7nhgk5ougy3bhpv4hho2cxjo2jv5sue4ufnkdq'
+        rsc: 'https://ipfs.io/ipfs/bafybeihzvrlcfqf6ffbp2juhuakspxj2bdsc54cabxnuxfvuqy5lvfxapy'
       }
     }
   ]
